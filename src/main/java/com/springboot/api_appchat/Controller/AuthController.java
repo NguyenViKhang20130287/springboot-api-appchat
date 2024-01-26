@@ -1,6 +1,6 @@
 package com.springboot.api_appchat.Controller;
 
-import com.springboot.api_appchat.Dto.UserSignUpDto;
+import com.springboot.api_appchat.Dto.UserDto;
 import com.springboot.api_appchat.Service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,22 @@ public class AuthController {
     }
 
     @PostMapping("confirm-sign-up")
-    public ResponseEntity<?> confirmSignUp(@RequestBody UserSignUpDto userSignUpDto) {
-        return ResponseEntity.ok(authService.confirmSignUp(userSignUpDto));
+    public ResponseEntity<?> confirmSignUp(@RequestBody UserDto userDto) {
+        return ResponseEntity.ok(authService.confirmSignUp(userDto));
+    }
+
+    @PostMapping("sign-in")
+    public ResponseEntity<?> signIn(@RequestParam String email, @RequestParam String password) {
+        return ResponseEntity.ok(authService.signIn(email, password));
+    }
+
+    @PostMapping("forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestParam String email){
+        return ResponseEntity.ok(authService.forgotPassword(email));
+    }
+
+    @PostMapping("confirm-forgot-password")
+    public ResponseEntity<?> confirmForgotPassword(@RequestBody UserDto userDto){
+        return ResponseEntity.ok(authService.confirmForgotPassword(userDto));
     }
 }

@@ -1,7 +1,7 @@
 package com.springboot.api_appchat.Service;
 
 import com.springboot.api_appchat.Config.EmailConfig;
-import com.springboot.api_appchat.Dto.UserSignUpDto;
+import com.springboot.api_appchat.Dto.UserDto;
 import com.springboot.api_appchat.Entity.User;
 import com.springboot.api_appchat.Repository.AuthRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +54,6 @@ public class AuthServiceImpl implements AuthService {
         }).start();
     }
 
-    public boolean validateOtp(String email, String enteredOtp) {
-        String otp = mapOtp.get(email);
-        return otp != null && otp.equals(enteredOtp);
-    }
-
     public void clearOtp(String email) {
         mapOtp.remove(email);
         System.out.println("OTP email: " + email + " is clear!!!");
@@ -86,21 +81,49 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<?> confirmSignUp(UserSignUpDto userSignUpDto) {
-        if (!checkEmailIsValid(userSignUpDto.getEmail()) || mapOtp.get(userSignUpDto.getEmail()) == null)
+    public ResponseEntity<?> confirmSignUp(UserDto userDto) {
+        if (!checkEmailIsValid(userDto.getEmail()) || mapOtp.get(userDto.getEmail()) == null)
             return new ResponseEntity<>("OTP has expired !!!", HttpStatus.BAD_REQUEST);
-        if (!userSignUpDto.getOtp().equals(mapOtp.get(userSignUpDto.getEmail())))
+        if (!userDto.getOtp().equals(mapOtp.get(userDto.getEmail())))
             return new ResponseEntity<>("OTP incorrect !!!", HttpStatus.BAD_REQUEST);
         User user = new User();
-        user.setUsername(userSignUpDto.getEmail());
-        user.setEmail(userSignUpDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userSignUpDto.getPassword()));
+        user.setUsername(userDto.getEmail());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setAvatar("LINK");
         user.setIsAdmin(1);
         authRepository.save(user);
-        System.out.println("Email: " + userSignUpDto.getEmail() + " successful");
-        clearOtp(userSignUpDto.getEmail());
+        System.out.println("Email: " + userDto.getEmail() + " successful");
+        clearOtp(userDto.getEmail());
         return ResponseEntity.ok("Sign up successful");
+    }
+
+    @Override
+    public ResponseEntity<?> signIn(String email, String password) {
+        User user = authRepository.findByEmail(email);
+        if (user == null) return new ResponseEntity<>("Email doesn't exists !!!", HttpStatus.BAD_REQUEST);
+        if (!passwordEncoder.matches(password, user.getPassword()))
+            return new ResponseEntity<>("Password incorrect !!!", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> forgotPassword(String email) {
+        if (!checkEmailIsExist(email)) return new ResponseEntity<>("Email doesn't exist !!!", HttpStatus.BAD_REQUEST);
+        emailConfig.send("Forgot password", email, generateOtp(email));
+        return new ResponseEntity<>("OTP for forget password successful", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> confirmForgotPassword(UserDto userDto) {
+        if (!checkEmailIsValid(userDto.getEmail()) || mapOtp.get(userDto.getEmail()) == null)
+            return new ResponseEntity<>("OTP has expired !!!", HttpStatus.BAD_REQUEST);
+        if (!userDto.getOtp().equals(mapOtp.get(userDto.getEmail())))
+            return new ResponseEntity<>("OTP incorrect !!!", HttpStatus.BAD_REQUEST);
+        User user = authRepository.findByEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getNewPassword()));
+        authRepository.save(user);
+        return new ResponseEntity<>("Reset password successful", HttpStatus.OK);
     }
 
     @Override

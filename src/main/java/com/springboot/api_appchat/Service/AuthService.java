@@ -8,7 +8,7 @@ public interface AuthService  extends UserDetailsService {
     boolean checkEmailIsExist(String email);
     ResponseEntity<?> signUp(String email);
     ResponseEntity<?> confirmSignUp(UserDto userDto);
-    ResponseEntity<?> signIn(String email, String password);
+    ResponseEntity<?> signIn(String email_username, String password);
     ResponseEntity<?> forgotPassword(String email);
     ResponseEntity<?> confirmForgotPassword(UserDto userDto);
 }

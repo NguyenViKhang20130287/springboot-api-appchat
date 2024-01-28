@@ -1,10 +1,13 @@
 package com.springboot.api_appchat.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,8 +21,8 @@ public class User {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "display_name")
+    private String displayName;
 
     @Column(name = "email")
     private String email;
@@ -32,4 +35,8 @@ public class User {
 
     @Column(name = "is_admin")
     private int isAdmin;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "host")
+    List<ChatRoom> myRooms;
 }

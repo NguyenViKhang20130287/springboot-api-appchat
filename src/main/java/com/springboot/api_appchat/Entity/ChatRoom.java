@@ -1,5 +1,6 @@
 package com.springboot.api_appchat.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,15 +26,17 @@ public class ChatRoom {
 
     @Column(name = "password_room")
     private String passwordRoom;
-//
-//    @Column(name = "host_id")
-//    private int hostId;
 
     @Column(name = "created_at")
     private String createdAt;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "host_id")
     private User host;
+
+//    @JsonIgnore
+    @OneToMany(mappedBy = "chatRoom")
+    private List<RoomMember> roomMembers;
 
 }

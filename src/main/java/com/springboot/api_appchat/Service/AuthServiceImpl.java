@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
         if (!userDto.getOtp().equals(mapOtp.get(userDto.getEmail())))
             return new ResponseEntity<>("OTP incorrect !!!", HttpStatus.BAD_REQUEST);
         User user = new User();
-        user.setDisplayName(userDto.getEmail());
+        user.setDisplayName(userDto.getDisplayName());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setAvatar("LINK");

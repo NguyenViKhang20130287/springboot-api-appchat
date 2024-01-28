@@ -26,24 +26,4 @@ public class UserServiceImpl implements UserService {
         this.chatRoomRepository = chatRoomRepository;
     }
 
-    @Override
-    public ResponseEntity<?> findAllMyRoomsById(long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) return new ResponseEntity<>("User not found!!!", HttpStatus.NOT_FOUND);
-        if (user.getMyRooms().isEmpty()) return new ResponseEntity<>("Your Room not found !!!", HttpStatus.OK);
-        return new ResponseEntity<>(user.getMyRooms(), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<?> createRoomChat(RoomChatDto roomChatDto) {
-        User user = userRepository.findById(roomChatDto.getHostId()).orElse(null);
-        if (user == null) return new ResponseEntity<>("User not found!!!", HttpStatus.NOT_FOUND);
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.setRoomName(roomChatDto.getRoomName());
-        chatRoom.setPasswordRoom(roomChatDto.getPasswordRoom());
-        chatRoom.setHost(user);
-        chatRoom.setCreatedAt(String.valueOf(LocalDateTime.now()));
-        chatRoomRepository.save(chatRoom);
-        return new ResponseEntity<>(chatRoom, HttpStatus.CREATED);
-    }
 }

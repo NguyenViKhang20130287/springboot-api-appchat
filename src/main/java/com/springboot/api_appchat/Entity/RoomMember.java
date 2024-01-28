@@ -1,22 +1,31 @@
 package com.springboot.api_appchat.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "roommembers")
 public class RoomMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
-//    @ManyToOne
-    @Column(name = "chat_room_id")
-    private int chatRoomId;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private ChatRoom chatRoom;
 
-//    @ManyToOne
-    @Column(name = "user_id")
-    private int userId;
+//    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User member;
 
     @Column(name = "joined_at")
     private String joinedAt;

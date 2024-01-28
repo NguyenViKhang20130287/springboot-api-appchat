@@ -85,8 +85,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             return new ResponseEntity<>("You do not have permission to perform this action", HttpStatus.BAD_REQUEST);
 
         List<RoomMember> memberList = chatRoom.getRoomMembers();
-        for(RoomMember member : memberList){
-            if (userId == member.getMember().getId()){
+        for (RoomMember member : memberList) {
+            if (userId == member.getMember().getId()) {
                 return new ResponseEntity<>("The user has joined the room", HttpStatus.BAD_REQUEST);
             }
         }
@@ -98,6 +98,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         roomMemberRepository.save(roomMember);
         return new ResponseEntity<>(roomMember, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> removeUserFromRoom(long roomId, long userId, long hostId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) return new ResponseEntity<>("User not found!!!", HttpStatus.NOT_FOUND);
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
+        if (chatRoom == null) return new ResponseEntity<>("Room not found!!!", HttpStatus.NOT_FOUND);
+
+        // Kiem tra phai host hay khong ?
+        if (hostId != chatRoom.getHost().getId())
+            return new ResponseEntity<>("You do not have permission to perform this action", HttpStatus.BAD_REQUEST);
+
+        RoomMember roomMember = roomMemberRepository.findByChatRoomIdAndMemberId(roomId, userId);
+        if (roomMember == null)
+            return new ResponseEntity<>("The user has not joined the chat room !!!", HttpStatus.NOT_FOUND);
+        roomMemberRepository.delete(roomMember);
+        return new ResponseEntity<>("Remove user successful", HttpStatus.OK);
     }
 
 }

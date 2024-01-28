@@ -9,4 +9,5 @@ public interface ChatRoomService {
     ResponseEntity<?> deleteRoomChat(long userId, long chatRoomId);
     ResponseEntity<?> findRoomByName(String roomName);
     ResponseEntity<?> addUserToRoom(long roomId, long userId, long hostId);
+    ResponseEntity<?> removeUserFromRoom(long roomId, long userId, long hostId);
 }

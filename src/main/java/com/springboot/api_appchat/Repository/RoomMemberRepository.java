@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
     List<RoomMember> findAllByChatRoomId(long chatRoomId);
+    RoomMember findByChatRoomIdAndMemberId(long roomId, long userId);
 }

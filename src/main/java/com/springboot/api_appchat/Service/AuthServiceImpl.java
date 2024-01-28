@@ -86,6 +86,8 @@ public class AuthServiceImpl implements AuthService {
             return new ResponseEntity<>("OTP has expired !!!", HttpStatus.BAD_REQUEST);
         if (!userDto.getOtp().equals(mapOtp.get(userDto.getEmail())))
             return new ResponseEntity<>("OTP incorrect !!!", HttpStatus.BAD_REQUEST);
+        if (authRepository.findByDisplayName(userDto.getDisplayName()) != null)
+            return new ResponseEntity<>("DisplayName already exists", HttpStatus.BAD_REQUEST);
         User user = new User();
         user.setDisplayName(userDto.getDisplayName());
         user.setEmail(userDto.getEmail());

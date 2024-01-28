@@ -35,13 +35,23 @@ public class UserController {
     }
 
     @GetMapping("find-rooms")
-    public ResponseEntity<?> findAllRoomsByRoomName(String roomName){
+    public ResponseEntity<?> findAllRoomsByRoomName(String roomName) {
         return ResponseEntity.ok(chatRoomService.findRoomByName(roomName));
     }
 
     @PostMapping("add-user-to-room")
-    public ResponseEntity<?> addUserToRoom(@RequestParam long roomId, @RequestParam long userId, @RequestParam long hostId){
+    public ResponseEntity<?> addUserToRoom(@RequestParam long roomId, @RequestParam long userId, @RequestParam long hostId) {
         return ResponseEntity.ok(chatRoomService.addUserToRoom(roomId, userId, hostId));
+    }
+
+    @PostMapping("remove-user-from-room")
+    public ResponseEntity<?> removeUserFromRoom(@RequestParam long roomId, @RequestParam long userId, @RequestParam long hostId) {
+        return ResponseEntity.ok(chatRoomService.removeUserFromRoom(roomId, userId, hostId));
+    }
+
+    @GetMapping("find")
+    public ResponseEntity<?> findUser(@RequestParam String displayName) {
+        return ResponseEntity.ok(userService.findByDisplayName(displayName));
     }
 
 }

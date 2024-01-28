@@ -36,11 +36,9 @@ public class User {
     @Column(name = "is_admin")
     private int isAdmin;
 
-//    @JsonIgnore
     @OneToMany(mappedBy = "host")
     private List<ChatRoom> myRooms;
 
-//    @JsonIgnore
-    @OneToOne(mappedBy = "member")
-    private RoomMember roomMember;
+//    @OneToOne(mappedBy = "member")
+//    private RoomMember roomMember;
 }
